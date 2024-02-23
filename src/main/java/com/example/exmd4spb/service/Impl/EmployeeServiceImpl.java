@@ -57,5 +57,15 @@ public class EmployeeServiceImpl implements IEmployeeService {
 
     @Override
     public void update(Long id, EmployeeReqDto employeeReqDto) {
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        employee.setName(employeeReqDto.getName());
+        employee.setDob(employeeReqDto.getDob());
+        employee.setPhoneNum(employeeReqDto.getPhoneNum());
+        employee.setGender(employeeReqDto.getGender() == "1" ? true : false);
+        employee.setEmail(employeeReqDto.getEmail());
+        employee.setAddress(employeeReqDto.getAddress());
+        employee.setCityCard(employeeReqDto.getCityCard());
+        employee.setGroup(groupRepository.findById(employeeReqDto.getGroupId()).orElse(null));
+        employeeRepository.save(employee);
     }
 }

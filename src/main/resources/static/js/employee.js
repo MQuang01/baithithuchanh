@@ -2,6 +2,8 @@ const tBody = document.getElementById("tBody");
 const paging = document.getElementById("paging");
 const form = document.getElementById('form');
 const formBody = document.getElementById('formBody');
+const formSearch = document.getElementById('formSearch');
+const eSearch = document.getElementById('search');
 let employeeSelected = {};
 let page = 0;
 let employees;
@@ -12,7 +14,6 @@ const LIMIT = 2;
 
 
 form.onsubmit = async (e) => {
-    console.log("aaaaa")
     e.preventDefault();
     let data = getDataFromForm(form);
     data = {
@@ -23,12 +24,10 @@ form.onsubmit = async (e) => {
     let result = false;
     if (employeeSelected.id) {
         result = await myFetch({data, url: '/api/employees/' + employeeSelected.id, method: 'PUT', message: 'Edited'});
-
     } else {
         result = await myFetch({data, url: '/api/employees', method: 'POST', message: 'Created'})
     }
     if (result) {
-
         await renderTable();
         $('#staticBackdrop').modal('hide');
     }
@@ -45,6 +44,13 @@ async function getEmployees() {
     const res = await fetch(`/api/employees?page=${page}&size=${LIMIT}&search=${searchValue}`)
     return await res.json();
 }
+
+
+formSearch.addEventListener('submit', (e) => {
+    e.preventDefault();
+    searchValue = eSearch.value;
+    renderTable();
+})
 
 // render tBody
 
@@ -236,7 +242,6 @@ async function showEdit(id) {
     $('#staticBackdropLabel').text('Edit Employee');
     clearForm();
     employeeSelected = await findEmployeeById(id);
-    console.log(employeeSelected)
     renderForm(formBody, getDataInput());
 }
 
